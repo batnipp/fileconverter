@@ -1,28 +1,12 @@
 # Core requirements
 streamlit>=1.31.0,<2.0.0
-pandas>=2.2.0
-streamlit-folium>=0.17.0
-folium>=0.15.1
-
-# Data visualization and analysis
-plotly>=5.18.0
-numpy>=1.26.3
-scipy>=1.12.0
-seaborn>=0.13.1
-
-# GeoJSON processing
-geopandas>=0.14.1
-shapely>=2.0.2
+pandas>=1.5.0
+streamlit-folium>=0.7.0
+folium>=0.12.0
 
 # Geocoding
 geopy>=2.4.1
 
 # File handling
-openpyxl>=3.1.2  # for Excel file support
+openpyxl>=3.0.9  # for Excel file support
 xlrd>=2.0.1      # for older Excel files
-
-# Utilities
-python-dateutil>=2.8.2
-pytz>=2024.1
-
-# SQLite comes with Python - no need to include
