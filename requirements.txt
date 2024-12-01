@@ -1,30 +1,29 @@
-# Core requirements for geocoder
-streamlit=1.31.0
-pandas=2.2.0
-geopy=2.4.1
-folium=0.15.1
-streamlit_folium=0.17.0
+# Core requirements
+streamlit==1.31.0
+pandas==2.2.0
 
-# Data science and analysis
-numpy=1.26.3
-scipy=1.12.0
-scikit_learn=1.4.0
-matplotlib=3.8.2
-seaborn=0.13.1
+# Geocoding requirements
+geopy==2.4.1
+folium==0.15.1
+streamlit_folium==0.17.0
 
-# Web and API tools
-requests=2.31.0
-fastapi=0.109.0
-uvicorn=0.27.0
-beautifulsoup4=4.12.3
-python_dotenv=1.0.0
+# Data visualization and analysis
+plotly==5.18.0
+numpy==1.26.3
+scipy==1.12.0
+seaborn==0.13.1
+
+# GeoJSON processing
+geopandas==0.14.1
+shapely==2.0.2
 
 # Database
-sqlalchemy=2.0.25
-psycopg2_binary=2.9.9
-pymongo=4.6.1
+sqlite3  # (comes with Python, no need to include)
+
+# File handling
+openpyxl==3.1.2  # for Excel file support
+xlrd==2.0.1      # for older Excel files
 
 # Utility
-tqdm=4.66.1
-python_dateutil=2.8.2
-pytz=2024.1
+python-dateutil==2.8.2
+pytz==2024.1
