@@ -28,9 +28,18 @@ def load_file(uploaded_file, input_format: str) -> Tuple[Any, str]:
         if input_format == 'CSV':
             return pd.read_csv(uploaded_file), None
         elif input_format in ['JSON', 'GeoJSON']:
-            if input_format == 'GeoJSON':
-                return gpd.read_file(uploaded_file), None
-            return pd.read_json(uploaded_file), None
+            # Special handling for JSON files
+            json_data = json.load(uploaded_file)
+            if 'type' in json_data and json_data['type'] == 'FeatureCollection':
+                # Handle GeoJSON format
+                features = json_data['features']
+                rows = []
+                for feature in features:
+                    row = feature['properties'].copy()
+                    row['geometry'] = feature['geometry']
+                    rows.append(row)
+                return pd.DataFrame(rows), None
+            return pd.DataFrame(json_data), None
         elif input_format == 'Excel':
             return pd.read_excel(uploaded_file), None
         elif input_format == 'XML':
@@ -67,16 +76,17 @@ def convert_file(data: Any, output_format: str) -> Tuple[Any, str]:
             if output_format == 'CSV':
                 return data, None
             elif output_format == 'JSON':
-                return pd.DataFrame(json.loads(data.to_json(orient='records'))), None
+                return data, None
             elif output_format == 'GeoJSON':
-                # Basic CSV to GeoJSON conversion (assuming lat/lon columns)
-                if 'latitude' in data.columns and 'longitude' in data.columns:
-                    gdf = gpd.GeoDataFrame(
-                        data,
-                        geometry=gpd.points_from_xy(data.longitude, data.latitude)
-                    )
+                # Convert DataFrame with geometry column to GeoJSON
+                if 'geometry' in data.columns:
+                    gdf = gpd.GeoDataFrame.from_features([{
+                        'type': 'Feature',
+                        'geometry': row['geometry'],
+                        'properties': {col: row[col] for col in data.columns if col != 'geometry'}
+                    } for _, row in data.iterrows()])
                     return gdf, None
-                return None, "Missing latitude/longitude columns for GeoJSON conversion"
+                return None, "Missing geometry column for GeoJSON conversion"
             elif output_format == 'Excel':
                 return data, None
             elif output_format == 'XML':
