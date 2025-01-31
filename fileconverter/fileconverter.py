@@ -215,15 +215,33 @@ def main():
                         # Add map preview for geospatial data
                         if isinstance(data, gpd.GeoDataFrame):
                             try:
-                                import folium
-                                from streamlit_folium import st_folium
+                                # First, ensure the data is in a geographic coordinate system
+                                if data.crs is None:
+                                    st.warning("No coordinate system found. Map preview may not be accurate.")
+                                else:
+                                    data = data.to_crs(epsg=4326)
                                 
-                                m = folium.Map()
-                                data.explore(m=m)
-                                st_folium(m, width=700, height=500)
+                                # Create the map centered on the data
+                                center_lat = data.geometry.centroid.y.mean()
+                                center_lon = data.geometry.centroid.x.mean()
+                                
+                                import folium
+                                from streamlit_folium import folium_static
+                                
+                                m = folium.Map(location=[center_lat, center_lon], zoom_start=10)
+                                
+                                # Add the GeoDataFrame to the map
+                                folium.GeoJson(
+                                    data,
+                                    style_function=lambda x: {'fillColor': 'blue', 'color': 'blue', 'weight': 1, 'fillOpacity': 0.1}
+                                ).add_to(m)
+                                
+                                # Display the map
+                                folium_static(m)
+                                
                             except Exception as e:
                                 logger.error(f"Error displaying map: {str(e)}")
-                                st.warning("Could not display map preview")
+                                st.warning(f"Could not display map preview: {str(e)}")
                         else:
                             st.info("Map preview is only available for geospatial data formats.")
 
